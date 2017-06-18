@@ -269,7 +269,7 @@ def listar():
   for x in ordenar_tuplas: #(DESC, (DATA, HORA, PRI, CONTEXTO, PROJETO)). 
     
     if x[1][0] != '' and x[1][1] != '': #se tiver data e hr
-      enumerar_lista[i] = '{} {}/{}/{} {}:{} {} {} {} {}'.format(str(i), x[1][0][:2], x[1][0][2:4], x[1][0][4:], x[1][1][:2], x[1][1][2:], x[1][2], x[0], x[1][3], x[1][4])
+      enumerar_lista[i] = '{} {}/{}/{} {}h{}m {} {} {} {}'.format(str(i), x[1][0][:2], x[1][0][2:4], x[1][0][4:], x[1][1][:2], x[1][1][2:], x[1][2], x[0], x[1][3], x[1][4])
       
       if x[1][2][1:2] == 'A':
         printCores(enumerar_lista[i], BLUE + BOLD)
@@ -297,7 +297,7 @@ def listar():
         print(enumerar_lista[i])
         
     elif x[1][0] == '' and x[1][1] != '':
-      enumerar_lista[i] = '{} {}:{} {} {} {} {}'.format(str(i), x[1][1][:2], x[1][1][2:], x[1][2], x[0], x[1][3], x[1][4])
+      enumerar_lista[i] = '{} {}h{}m {} {} {} {}'.format(str(i), x[1][1][:2], x[1][1][2:], x[1][2], x[0], x[1][3], x[1][4])
 
       if x[1][2][1:2] == 'A':
         printCores(enumerar_lista[i], BLUE + BOLD)
