@@ -87,7 +87,7 @@ def dataValida(data) :
   if len(data) != 8 or not soDigitos(data): #checando se nao é menor ou maior que 8 carecteres e se é so numeros
     return False
   else:
-    if data[:2] > '31' or data[2:4] > '12': #checando se o dia e o mês serão inválidos(caso geral)
+    if data[:2] > '31' or data[2:4] > '12' or data[:2] < '01' or data[2:4] < '01': #checando se o dia e o mês serão inválidos(caso geral)
       return False
     
     if data[2:4] == '02' and data[:2] > '29': #Fevereiro 
@@ -218,10 +218,11 @@ def organizar(linhas):
           tokens.pop(i)
           
           
-        elif tokens[i][:1] == '(': #checando prioridade
+        elif tokens[i][:1] == '(' and tokens[i][2:] == ')': #checando prioridade
 
           if prioridadeValida(tokens[i]):
             pri = tokens[i]
+            pri = pri.upper()
           tokens.pop(i)
           
 
@@ -233,6 +234,8 @@ def organizar(linhas):
         else:
           desc = desc +' '+tokens[i]
           tokens.pop(i)
+          dataCheck = True
+          horaCheck = True
       
     desc = desc +''+ ' '.join(tokens) #pegando o resto do que sobrou nos tokens
     if desc == '' or desc == ' '*len(desc):
