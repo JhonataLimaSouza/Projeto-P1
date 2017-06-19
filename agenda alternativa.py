@@ -59,24 +59,24 @@ def adicionar(descricao, extras):
 
 
 # Valida a prioridade.
-def prioridadeValida(pri):
-  pri = pri.upper()
-  if len(pri) != 3:
+def prioridadeValida(pri): 
+  pri = pri.upper() #deixando maiusculo pra poder checar
+  if len(pri) != 3: #nao pode ser diferente de 3
     return False
-  elif pri[0] != '(' or pri[2] != ')':
+  elif pri[0] != '(' or pri[2] != ')': #tem que ter parenteses
     return False
-  elif (pri[1] < 'A' or pri[1] > 'Z'):
+  elif (pri[1] < 'A' or pri[1] > 'Z'): #de A a Z
     return False
-  return True
+  return True 
 
 
 # Valida a hora. Consideramos que o dia tem 24 horas, como no Brasil, ao invés
 # de dois blocos de 12 (AM e PM), como nos EUA.
 def horaValida(horaMin):
-  if len(horaMin) != 4 or not soDigitos(horaMin):
+  if len(horaMin) != 4 or not soDigitos(horaMin): #nao pode maior que 4 e tem que ser digitos
     return False
   else:
-    if horaMin[0:2] > '23' or horaMin[2:] > '59': #checando se a hora está maior que 23.
+    if horaMin[0:2] > '23' or horaMin[2:] > '59': #checando se a hora está maior que 23. e minutis 59
       return False                      
     return True
 
@@ -117,7 +117,7 @@ def projetoValido(proj):
 
 # Valida que o string do contexto está no formato correto. 
 def contextoValido(cont):
-  if len(cont) > 2 and cont[0] == '@': #validando se começa com + e tem mais de dois caracteres.
+  if len(cont) > 2 and cont[0] == '@': #validando se começa com @ e tem mais de dois caracteres.
     return True
   return False
 
@@ -213,7 +213,7 @@ def organizar(linhas):
     else:
       desc = ' '.join(tokens)
 
-    #desc = desc +''+ ' '.join(tokens) #pegando o resto do que sobrou nos tokens
+
     if desc == '' or desc == ' '*len(desc):
       raise ValueError('Não há descrição.')
     
@@ -441,13 +441,15 @@ def ordenarPorDataHora(itens): #(DESC, (DATA, HORA, PRI, CONTEXTO, PROJETO)).
     j = 0
     while j < len(itens) -1:
         
-      if itens[j][1][0][4:] >= itens[j+1][1][0][4:]:  #organizando por ano
+      if itens[j][1][0][4:] > itens[j+1][1][0][4:]:  #organizando por ano
         itens[j], itens[j+1] = itens[j+1], itens[j]
         
-        if itens[j][1][0][2:4] >= itens[j+1][1][0][2:4]: #organizando por mês
+      elif itens[j][1][0][4:] == itens[j+1][1][0][4:]:
+        if itens[j][1][0][2:4] > itens[j+1][1][0][2:4]: #organizando por mês
           itens[j], itens[j+1] = itens[j+1], itens[j]
-        
-          if itens[j][1][0][:2] >= itens[j+1][1][0][:2]: #organizando por dia
+          
+        elif itens[j][1][0][2:4] == itens[j+1][1][0][2:4]:
+          if itens[j][1][0][:2] > itens[j+1][1][0][:2]: #organizando por dia
             itens[j], itens[j+1] = itens[j+1], itens[j]
 
       j = j + 1   #explicação: Se não identar os ifs, tudo fica se desordenando.
