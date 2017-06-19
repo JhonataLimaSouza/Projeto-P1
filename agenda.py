@@ -59,24 +59,24 @@ def adicionar(descricao, extras):
 
 
 # Valida a prioridade.
-def prioridadeValida(pri):
-  pri = pri.upper()
-  if len(pri) != 3:
+def prioridadeValida(pri): 
+  pri = pri.upper() #deixando maiusculo pra poder checar
+  if len(pri) != 3: #nao pode ser diferente de 3
     return False
-  elif pri[0] != '(' or pri[2] != ')':
+  elif pri[0] != '(' or pri[2] != ')': #tem que ter parenteses
     return False
-  elif (pri[1] < 'A' or pri[1] > 'Z'):
+  elif (pri[1] < 'A' or pri[1] > 'Z'): #de A a Z
     return False
-  return True
+  return True 
 
 
 # Valida a hora. Consideramos que o dia tem 24 horas, como no Brasil, ao invés
 # de dois blocos de 12 (AM e PM), como nos EUA.
 def horaValida(horaMin):
-  if len(horaMin) != 4 or not soDigitos(horaMin):
+  if len(horaMin) != 4 or not soDigitos(horaMin): #nao pode maior que 4 e tem que ser digitos
     return False
   else:
-    if horaMin[0:2] > '23' or horaMin[2:] > '59': #checando se a hora está maior que 23.
+    if horaMin[0:2] > '23' or horaMin[2:] > '59': #checando se a hora está maior que 23. e minutis 59
       return False                      
     return True
 
@@ -117,7 +117,7 @@ def projetoValido(proj):
 
 # Valida que o string do contexto está no formato correto. 
 def contextoValido(cont):
-  if len(cont) > 2 and cont[0] == '@': #validando se começa com + e tem mais de dois caracteres.
+  if len(cont) > 2 and cont[0] == '@': #validando se começa com @ e tem mais de dois caracteres.
     return True
   return False
 
@@ -170,11 +170,11 @@ def organizar(linhas):
     # corresponde à descrição. É só transformar a lista de tokens em um string e
     # construir a tupla com as informações disponíveis. 
 
-    dataCheck = False
-    horaCheck = False
+    dataCheck = False #para nao dar bug com data
+    horaCheck = False #para nao dar bug com hora
     i = 0
     while i < len(tokens): 
-
+     
       if tokens[i][:1] <= '9' and tokens[i][:1] >= '0': #checando se é um número pra testar hora e data
           
         if len(tokens[i]) == 8 and not(dataCheck): #vendo se é uma data
@@ -188,14 +188,13 @@ def organizar(linhas):
             desc = desc +' '+tokens[i]
             tokens.pop(i) #mesmo que seja válida você remove pra no final ficar fácil add variável em descrição
 
-          
-       
+
         elif len(tokens[i]) == 4 and not(horaCheck): # vendo se é uma hora
 
           if horaValida(tokens[i]): #mesmo processo da Data
             hora = tokens[i]
             tokens.pop(i)
-            horaCheck = True
+            horaCheck = True #nao deixa mais entrar nessa condição, pois invalidou a primeira data, a segunda poderá ser descrição.
             
           else:
             desc = desc +' '+tokens[i]
@@ -211,32 +210,40 @@ def organizar(linhas):
           
       else:   #se não for número aí vamos as letras
         
-        if tokens[i][:1] == '+': #checando o projeto
+        if tokens[i][:1] == '+' and projeto == '': #checando o projeto
           
           if projetoValido(tokens[i]):
             projeto = tokens[i]
-          tokens.pop(i)
+            tokens.pop(i)
+          else:
+            desc = desc +' '+tokens[i]
+            tokens.pop(i)
+            
           
-          
-        elif tokens[i][:1] == '(' and tokens[i][2:] == ')': #checando prioridade
+        elif tokens[i][:1] == '(' and tokens[i][2:] == ')' and pri == '': #checando prioridade
 
           if prioridadeValida(tokens[i]):
             pri = tokens[i]
             pri = pri.upper()
-          tokens.pop(i)
-          
+            tokens.pop(i)
+          else:
+            desc = desc +' '+tokens[i]
+            tokens.pop(i)
 
-        elif tokens[i][:1] == '@': #checando contexto
+        elif tokens[i][:1] == '@' and contexto == '': #checando contexto
 
           if contextoValido(tokens[i]):
             contexto = tokens[i]
-          tokens.pop(i)
+            tokens.pop(i)
+          else:
+            desc = desc +' '+tokens[i]
+            tokens.pop(i)
         else:
           desc = desc +' '+tokens[i]
           tokens.pop(i)
-          dataCheck = True
+          dataCheck = True #se já entrou em letras e nao numeros é pq não pode haver mais datas e horas
           horaCheck = True
-      
+       
     desc = desc +''+ ' '.join(tokens) #pegando o resto do que sobrou nos tokens
     if desc == '' or desc == ' '*len(desc):
       raise ValueError('Não há descrição.')
@@ -465,13 +472,15 @@ def ordenarPorDataHora(itens): #(DESC, (DATA, HORA, PRI, CONTEXTO, PROJETO)).
     j = 0
     while j < len(itens) -1:
         
-      if itens[j][1][0][4:] >= itens[j+1][1][0][4:]:  #organizando por ano
+      if itens[j][1][0][4:] > itens[j+1][1][0][4:]:  #organizando por ano
         itens[j], itens[j+1] = itens[j+1], itens[j]
         
-        if itens[j][1][0][2:4] >= itens[j+1][1][0][2:4]: #organizando por mês
+      elif itens[j][1][0][4:] == itens[j+1][1][0][4:]:
+        if itens[j][1][0][2:4] > itens[j+1][1][0][2:4]: #organizando por mês
           itens[j], itens[j+1] = itens[j+1], itens[j]
-        
-          if itens[j][1][0][:2] >= itens[j+1][1][0][:2]: #organizando por dia
+          
+        elif itens[j][1][0][2:4] == itens[j+1][1][0][2:4]:
+          if itens[j][1][0][:2] > itens[j+1][1][0][:2]: #organizando por dia
             itens[j], itens[j+1] = itens[j+1], itens[j]
 
       j = j + 1   #explicação: Se não identar os ifs, tudo fica se desordenando.
